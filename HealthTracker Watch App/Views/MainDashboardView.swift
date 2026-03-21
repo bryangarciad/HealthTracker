@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct MainDashboardView: View {
+    @ObservedObject var viewModel: HealthViewModel
     
     var body: some View {
         ScrollView {
@@ -53,10 +54,45 @@ struct MainDashboardView: View {
                     }
                 }
             }
+            HStack(spacing: 4) {
+                NavigationLink(destination: AddEntryView(viewModel: viewModel, entryType: .water)) {
+                    VStack(spacing: 4) {
+                        Image(systemName: EntryType.water.icon)
+                        font(.system(size: 16, weight: .bold))
+                        Text(EntryType.water.displayType)
+                            .font(.system(size: 10))
+                    }
+                    .foregroundColor(EntryType.water.color)
+                    .frame(width: 70, height: 50)
+                    .background(EntryType.water.color.opacity(0.2))
+                    .cornerRadius(12)
+                }
+                
+                NavigationLink(destination: AddEntryView(viewModel: viewModel, entryType: .calories)) {
+                    VStack(spacing: 4) {
+                        Image(systemName: EntryType.calories.icon)
+                        font(.system(size: 16, weight: .bold))
+                        Text(EntryType.calories.displayType)
+                            .font(.system(size: 10))
+                    }
+                    .foregroundColor(EntryType.calories.color)
+                    .frame(width: 70, height: 50)
+                    .background(EntryType.calories.color.opacity(0.2))
+                    .cornerRadius(12)
+                }
+            }
+            NavigationLink(destination: GoalSettingsView(viewModel: viewModel)) {
+                HStack {
+                    Image(systemName: "gearshape.fill")
+                        .font(.system(size: 12))
+                    Text("Goals")
+                        .font(.system(size: 12))
+                }
+                .foregroundColor(.gray)
+            }
+            .buttonStyle(PlainButtonStyle())
+            .padding(.top, 4)
         }
+        .padding(.vertical, 8)
     }
-}
-
-#Preview {
-    MainDashboardView()
 }
