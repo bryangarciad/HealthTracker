@@ -39,9 +39,22 @@
 		BCBEC0922F6B788900A738DA /* HealthTracker Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HealthTracker Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		BCBEC0FC2F720CA500A738DA /* Exceptions for "HealthTracker Watch App" folder in "HealthTracker Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"HealthTracker-Watch-App-Info.plist",
+			);
+			target = BCBEC0912F6B788900A738DA /* HealthTracker Watch App */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		BCBEC0962F6B788900A738DA /* HealthTracker Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				BCBEC0FC2F720CA500A738DA /* Exceptions for "HealthTracker Watch App" folder in "HealthTracker Watch App" target */,
+			);
 			path = "HealthTracker Watch App";
 			sourceTree = "<group>";
 		};
@@ -319,8 +332,8 @@
 				DEVELOPMENT_TEAM = 33PDVR6SVF;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "HealthTracker-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = HealthTracker;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -352,8 +365,8 @@
 				DEVELOPMENT_TEAM = 33PDVR6SVF;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "HealthTracker-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = HealthTracker;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

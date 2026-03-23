@@ -14,11 +14,11 @@ struct MainDashboardView: View {
                     VStack(spacing: 6) {
                         ProgressRingView(
                             color: .cyan,
-                            progress: 0.4,
+                            progress: viewModel.waterProgress,
                             icon: "drop.fill",
                             size: 55
                         )
-                        Text("400")
+                        Text("\(Int(viewModel.todaysWater))")
                             .font(
                                 .system(
                                     size: 16,
@@ -27,19 +27,19 @@ struct MainDashboardView: View {
                                 )
                             )
                             .foregroundColor(.cyan)
-                        Text("2000 ml")
+                        Text("\(Int(viewModel.goals.dailyWaterGoal)) ml")
                             .font(.system(size: 9))
                             .foregroundColor(.gray)
                     }
-                    
+
                     VStack(spacing: 6) {
                         ProgressRingView(
                             color: .orange,
-                            progress: 0.6,
+                            progress: viewModel.caloriesProgress,
                             icon: "flame.fill",
                             size: 55
                         )
-                        Text("600")
+                        Text("\(Int(viewModel.todaysCalories))")
                             .font(
                                 .system(
                                     size: 16,
@@ -47,18 +47,19 @@ struct MainDashboardView: View {
                                     design: .rounded
                                 )
                             )
-                            .foregroundColor(.cyan)
-                        Text("2000 Kcal")
+                            .foregroundColor(.orange)
+                        Text("\(Int(viewModel.goals.dailyCaloriesGoal)) Kcal")
                             .font(.system(size: 9))
                             .foregroundColor(.gray)
                     }
                 }
             }
+            
             HStack(spacing: 4) {
                 NavigationLink(destination: AddEntryView(viewModel: viewModel, entryType: .water)) {
                     VStack(spacing: 4) {
                         Image(systemName: EntryType.water.icon)
-                        font(.system(size: 16, weight: .bold))
+                            .font(.system(size: 16, weight: .bold))
                         Text(EntryType.water.displayType)
                             .font(.system(size: 10))
                     }
@@ -67,11 +68,12 @@ struct MainDashboardView: View {
                     .background(EntryType.water.color.opacity(0.2))
                     .cornerRadius(12)
                 }
-                
+                .buttonStyle(PlainButtonStyle())
+
                 NavigationLink(destination: AddEntryView(viewModel: viewModel, entryType: .calories)) {
                     VStack(spacing: 4) {
                         Image(systemName: EntryType.calories.icon)
-                        font(.system(size: 16, weight: .bold))
+                            .font(.system(size: 16, weight: .bold))
                         Text(EntryType.calories.displayType)
                             .font(.system(size: 10))
                     }
@@ -80,7 +82,9 @@ struct MainDashboardView: View {
                     .background(EntryType.calories.color.opacity(0.2))
                     .cornerRadius(12)
                 }
+                .buttonStyle(PlainButtonStyle())
             }
+            
             NavigationLink(destination: GoalSettingsView(viewModel: viewModel)) {
                 HStack {
                     Image(systemName: "gearshape.fill")

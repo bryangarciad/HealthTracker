@@ -34,115 +34,156 @@ struct AddEntryView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                // Header with icon
-                // Design Principle: Clear visual context
-                Image(systemName: entryType.icon)
-                    .font(.system(size: 28))
-                    .foregroundColor(entryType == .calories ? .orange : .cyan)
-                
-                Text("Add \(entryType == .calories ? "Calories" : "Water")")
-                    .font(.system(size: 14, weight: .medium))
-                
-                // Current selection display
-                // Design Principle: Clear feedback on current state
-                Text("\(Int(selectedAmount)) \(entryType.unit)")
-                    .font(.system(size: 24, weight: .bold, design: .rounded))
-                    .foregroundColor(entryType == .calories ? .orange : .cyan)
-                
-                // Quick add buttons grid
-                // Design Principle: One-tap interactions for speed
-                LazyVGrid(columns: [
-                    GridItem(.flexible()),
-                    GridItem(.flexible())
-                ], spacing: 10) {
-                    ForEach(quickAddOptions, id: \.self) { amount in
-                        Button {
-                            viewModel.playClickHaptic()
-                            selectedAmount = amount
-                        } label: {
-                            Text("+\(Int(amount))")
-                                .font(.system(size: 14, weight: .semibold))
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 10)
-                                .background(
-                                    selectedAmount == amount
-                                        ? (entryType == .calories ? Color.orange : Color.cyan)
-                                        : Color.gray.opacity(0.3)
-                                )
-                                .foregroundColor(
-                                    selectedAmount == amount ? .black : .white
-                                )
-                                .cornerRadius(10)
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                    }
-                }
-                
-                // Custom amount with stepper
-                // Design Principle: Fine control when needed
-                HStack {
-                    Button {
-                        viewModel.playClickHaptic()
-                        selectedAmount = max(0, selectedAmount - 50)
-                    } label: {
-                        Image(systemName: "minus.circle.fill")
-                            .font(.system(size: 24))
-                            .foregroundColor(.gray)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                    
-                    Spacer()
-                    
-                    Text("Adjust")
-                        .font(.system(size: 12))
-                        .foregroundColor(.gray)
-                    
-                    Spacer()
-                    
-                    Button {
-                        viewModel.playClickHaptic()
-                        selectedAmount += 50
-                    } label: {
-                        Image(systemName: "plus.circle.fill")
-                            .font(.system(size: 24))
-                            .foregroundColor(.gray)
-                    }
-                    .buttonStyle(PlainButtonStyle())
-                }
-                .padding(.horizontal, 8)
-                
-                // Add button
-                // Design Principle: Clear primary action
-                Button {
-                    if selectedAmount > 0 {
-                        if entryType == .calories {
-                            viewModel.addCalories(selectedAmount)
-                        } else {
-                            viewModel.addWater(selectedAmount)
-                        }
-                        dismiss()
-                    }
-                } label: {
-                    Text("Add")
-                        .font(.system(size: 16, weight: .bold))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 12)
-                        .background(
-                            selectedAmount > 0
-                                ? (entryType == .calories ? Color.orange : Color.cyan)
-                                : Color.gray.opacity(0.3)
-                        )
-                        .foregroundColor(selectedAmount > 0 ? .black : .gray)
-                        .cornerRadius(12)
-                }
-                .buttonStyle(PlainButtonStyle())
-                .disabled(selectedAmount == 0)
+                headerSection
+                currentSelectionDisplay
+                quickAddButtonsGrid
+                adjustmentControls
+                addButton
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 8)
         }
-        .navigationTitle(entryType == .calories ? "Calories" : "Water")
+        .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
+    }
+
+    // MARK: - Computed Properties
+    private var primaryColor: Color {
+        entryType == .calories ? .orange : .cyan
+    }
+
+    private var navigationTitle: String {
+        entryType == .calories ? "Calories" : "Water"
+    }
+
+    private var entryTypeName: String {
+        entryType == .calories ? "Calories" : "Water"
+    }
+
+    // MARK: - Header Section
+    /// Design Principle: Clear visual context
+    private var headerSection: some View {
+        VStack(spacing: 8) {
+            Image(systemName: entryType.icon)
+                .font(.system(size: 28))
+                .foregroundColor(primaryColor)
+
+            Text("Add \(entryTypeName)")
+                .font(.system(size: 14, weight: .medium))
+        }
+    }
+
+    // MARK: - Current Selection Display
+    /// Design Principle: Clear feedback on current state
+    private var currentSelectionDisplay: some View {
+        Text("\(Int(selectedAmount)) \(entryType.unit)")
+            .font(.system(size: 24, weight: .bold, design: .rounded))
+            .foregroundColor(primaryColor)
+    }
+
+    // MARK: - Quick Add Buttons Grid
+    /// Design Principle: One-tap interactions for speed
+    private var quickAddButtonsGrid: some View {
+        LazyVGrid(columns: [
+            GridItem(.flexible()),
+            GridItem(.flexible())
+        ], spacing: 10) {
+            ForEach(quickAddOptions, id: \.self) { amount in
+                quickAddButton(for: amount)
+            }
+        }
+    }
+
+    private func quickAddButton(for amount: Double) -> some View {
+        let isSelected = selectedAmount == amount
+        let backgroundColor = isSelected ? primaryColor : Color.gray.opacity(0.3)
+        let foregroundColor = isSelected ? Color.black : Color.white
+
+        return Button {
+            viewModel.playClickHaptic()
+            selectedAmount = amount
+        } label: {
+            Text("+\(Int(amount))")
+                .font(.system(size: 14, weight: .semibold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .background(backgroundColor)
+                .foregroundColor(foregroundColor)
+                .cornerRadius(10)
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+
+    // MARK: - Adjustment Controls
+    /// Design Principle: Fine control when needed
+    private var adjustmentControls: some View {
+        HStack {
+            decrementButton
+            Spacer()
+            adjustmentLabel
+            Spacer()
+            incrementButton
+        }
+        .padding(.horizontal, 8)
+    }
+
+    private var decrementButton: some View {
+        Button {
+            viewModel.playClickHaptic()
+            selectedAmount = max(0, selectedAmount - 50)
+        } label: {
+            Image(systemName: "minus.circle.fill")
+                .font(.system(size: 24))
+                .foregroundColor(.gray)
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+
+    private var adjustmentLabel: some View {
+        Text("Adjust")
+            .font(.system(size: 12))
+            .foregroundColor(.gray)
+    }
+
+    private var incrementButton: some View {
+        Button {
+            viewModel.playClickHaptic()
+            selectedAmount += 50
+        } label: {
+            Image(systemName: "plus.circle.fill")
+                .font(.system(size: 24))
+                .foregroundColor(.gray)
+        }
+        .buttonStyle(PlainButtonStyle())
+    }
+
+    // MARK: - Add Button
+    /// Design Principle: Clear primary action
+    private var addButton: some View {
+        let isEnabled = selectedAmount > 0
+        let backgroundColor = isEnabled ? primaryColor : Color.gray.opacity(0.3)
+        let foregroundColor = isEnabled ? Color.black : Color.gray
+
+        return Button {
+            if selectedAmount > 0 {
+                if entryType == .calories {
+                    viewModel.addCalories(selectedAmount)
+                } else {
+                    viewModel.addWater(selectedAmount)
+                }
+                dismiss()
+            }
+        } label: {
+            Text("Add")
+                .font(.system(size: 16, weight: .bold))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .background(backgroundColor)
+                .foregroundColor(foregroundColor)
+                .cornerRadius(12)
+        }
+        .buttonStyle(PlainButtonStyle())
+        .disabled(selectedAmount == 0)
     }
 }
 

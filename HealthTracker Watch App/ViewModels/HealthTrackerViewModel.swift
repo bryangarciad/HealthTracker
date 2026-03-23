@@ -57,11 +57,15 @@ class HealthViewModel: ObservableObject {
             type: .water,
             value: amount
         )
-        
+
         StorageManager.shared.addEntry(waterEntry)
-        
+
         todaysWater += amount
-        
+
         WKInterfaceDevice.current().play(.notification)
+    }
+
+    func playClickHaptic() {
+        WKInterfaceDevice.current().play(.click)
     }
 }
