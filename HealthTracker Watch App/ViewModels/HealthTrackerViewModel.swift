@@ -9,6 +9,13 @@ class HealthViewModel: ObservableObject {
     @Published var todaysCalories: Double = 0
     @Published var todaysWater: Double = 0
     
+    @Published var currentHeartRate: Double = 0
+    @Published var isHealthKitAvailable: Bool = true
+    @Published var heartRateErrors: String?
+    
+    private let healthKit = HealthKitManager.shared
+    
+    
     // MARK: - Computed Properties
     var caloriesProgress: Double {
         min(todaysCalories / goals.dailyCaloriesGoal, 1.0)
@@ -24,6 +31,10 @@ class HealthViewModel: ObservableObject {
     
     var waterGoalMet: Bool {
         todaysWater >= goals.dailyWaterGoal
+    }
+    
+    var formattedHeartRate: String {
+        "\(Int(currentHeartRate)) BPM"
     }
     
     // MARK: - Initialization
@@ -67,5 +78,36 @@ class HealthViewModel: ObservableObject {
 
     func playClickHaptic() {
         WKInterfaceDevice.current().play(.click)
+    }
+    
+    func requestHealthKitAuthorization() async {
+        guard isHealthKitAvailable else {
+            heartRateErrors = "Heart Rate is not available"
+            return
+        }
+        
+        do {
+            try await healthKit.requestAuthorization()
+            isHealthKitAvailable = true
+            WKInterfaceDevice.current().play(.success)
+        } catch {
+            heartRateErrors = "Authorization Failed"
+            isHealthKitAvailable = false
+        }
+    }
+    
+    func startHeartRateMonitoring() async {
+        guard isHealthKitAvailable else {
+            heartRateErrors = "Heart Rate is not available"
+            return
+        }
+        
+        do {
+            if let sample = try await healthKit.fetchLatestHeartRateMeasure() {
+                currentHeartRate = sample.bpm
+            }
+        } catch {
+            heartRateErrors = "Failed to fetch latest heart rate"
+        }
     }
 }

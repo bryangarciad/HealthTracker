@@ -98,6 +98,20 @@ struct MainDashboardView: View {
             }
             .buttonStyle(PlainButtonStyle())
             .padding(.top, 4)
+            
+            
+            // Nagivation To Heart Rate View
+            NavigationLink(destination: HeartRateView(viewModel: viewModel)) {
+                HStack {
+                    Image(systemName: "heart.fill")
+                        .font(.system(size: 12))
+                    Text("Heart Rate")
+                        .font(.system(size: 12))
+                }
+                .foregroundColor(.red.opacity(0.3))
+            }
+            .buttonStyle(PlainButtonStyle())
+            .padding(.top, 4)
         }
         .padding(.vertical, 8)
     }

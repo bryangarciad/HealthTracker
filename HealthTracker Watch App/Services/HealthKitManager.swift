@@ -9,7 +9,6 @@ class HealthKitManager {
     
     
     let healthStore = HKHealthStore()
-    
     let heartRateType = HKQuantityType.quantityType(forIdentifier: .heartRate)!
     let heartRateUnit = HKUnit(from: "count/min") // <- BPMs
     
