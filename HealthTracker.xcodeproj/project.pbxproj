@@ -39,22 +39,9 @@
 		BCBEC0922F6B788900A738DA /* HealthTracker Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "HealthTracker Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		BCBEC0FC2F720CA500A738DA /* Exceptions for "HealthTracker Watch App" folder in "HealthTracker Watch App" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				"HealthTracker-Watch-App-Info.plist",
-			);
-			target = BCBEC0912F6B788900A738DA /* HealthTracker Watch App */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		BCBEC0962F6B788900A738DA /* HealthTracker Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				BCBEC0FC2F720CA500A738DA /* Exceptions for "HealthTracker Watch App" folder in "HealthTracker Watch App" target */,
-			);
 			path = "HealthTracker Watch App";
 			sourceTree = "<group>";
 		};
@@ -327,6 +314,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "HealthTracker Watch App/HealthTracker Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 33PDVR6SVF;
@@ -334,6 +322,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "HealthTracker-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = HealthTracker;
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "Our app is a health tracker that uses heart rate to indicate current status";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Our app is a health tracker that uses heart rate to indicate current status";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Our app is a health tracker that uses heart rate to indicate current status";
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -351,7 +342,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+				WATCHOS_DEPLOYMENT_TARGET = 11.6;
 			};
 			name = Debug;
 		};
@@ -360,6 +351,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "HealthTracker Watch App/HealthTracker Watch App.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 33PDVR6SVF;
@@ -367,6 +359,9 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "HealthTracker-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = HealthTracker;
+				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "Our app is a health tracker that uses heart rate to indicate current status";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "Our app is a health tracker that uses heart rate to indicate current status";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "Our app is a health tracker that uses heart rate to indicate current status";
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -385,7 +380,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 26.2;
+				WATCHOS_DEPLOYMENT_TARGET = 11.6;
 			};
 			name = Release;
 		};

@@ -55,6 +55,7 @@ struct MainDashboardView: View {
                 }
             }
             
+            // Add Entries button Set
             HStack(spacing: 4) {
                 NavigationLink(destination: AddEntryView(viewModel: viewModel, entryType: .water)) {
                     VStack(spacing: 4) {
@@ -85,6 +86,7 @@ struct MainDashboardView: View {
                 .buttonStyle(PlainButtonStyle())
             }
             
+            // Gear Buttton To Configure The Goals
             NavigationLink(destination: GoalSettingsView(viewModel: viewModel)) {
                 HStack {
                     Image(systemName: "gearshape.fill")
