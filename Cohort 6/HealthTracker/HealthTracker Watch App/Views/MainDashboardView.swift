@@ -1,6 +1,8 @@
 import SwiftUI
 
 struct MainDashboardView: View {
+    @ObservedObject var viewModel: HealtTrackerViewModel
+    
     var body: some View  {
         ScrollView {
             VStack(spacing: 16) {
@@ -14,16 +16,16 @@ struct MainDashboardView: View {
                     // Water Ring,
                     ProgressRingView(
                         color: EntryType.water.color,
-                        progress: 0.5,
+                        progress: viewModel.waterProgress,
                         icon: EntryType.water.icon,
                         size: 55
                     )
                     
-                    Text("\(Int(1000))")
+                    Text("\(Int(viewModel.todaysWater))")
                         .font(.system(size: 16, weight: .bold, design: .rounded))
                         .foregroundColor(EntryType.water.color)
                     
-                    Text("\(Int(2000)) ml")
+                    Text("\(Int(viewModel.goals.dailyWaterGoal)) ml")
                         .font(.system(size: 9))
                         .foregroundColor(.gray)
                 }
@@ -31,18 +33,18 @@ struct MainDashboardView: View {
                 VStack(spacing: 6) {
                     ProgressRingView(
                         color: EntryType.calories.color,
-                        progress: 0.3,
+                        progress: viewModel.caloriesProgress,
                         icon: EntryType.calories.icon,
                         size: 55
                     )
                     
 
-                    Text("\(Int(300))")
+                    Text("\(Int(viewModel.todaysCalories))")
                         .font(.system(size: 16, weight: .bold, design: .rounded))
                         .foregroundColor(EntryType.calories.color)
                     
 
-                    Text("\(Int(2000)) kcal")
+                    Text("\(Int(viewModel.goals.dailyCaloriesGoal)) kcal")
                         .font(.system(size: 9))
                         .foregroundColor(.gray)
                 }
@@ -52,6 +54,6 @@ struct MainDashboardView: View {
 }
 
 #Preview {
-    MainDashboardView()
+    MainDashboardView(viewModel: HealtTrackerViewModel())
 }
 
