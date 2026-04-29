@@ -49,6 +49,37 @@ struct MainDashboardView: View {
                         .foregroundColor(.gray)
                 }
             }
+            
+            HStack(spacing: 12) {
+                NavigationLink(destination: AddEntryView(viewModel: viewModel, entryType: .water)) {
+                    QuickAddButton(
+                        icon: "plus",
+                       label: EntryType.water.displayName,
+                       color: EntryType.water.color
+                    )
+                }
+                .buttonStyle(PlainButtonStyle())
+                
+                NavigationLink(destination: AddEntryView(viewModel: viewModel, entryType: .calories)) {
+                    QuickAddButton(
+                        icon: "plus",
+                       label: EntryType.calories.displayName,
+                       color: EntryType.calories.color
+                    )
+                }
+                .buttonStyle(PlainButtonStyle())
+            }
+            
+            NavigationLink(destination: GoalsSettingsView(viewModel: viewModel)) {
+                HStack {
+                    Image(systemName: "gearshape.fill")
+                        .font(.system(size: 12))
+                    Text("Goals")
+                        .font(.system(size: 12))
+                }.foregroundColor(.gray)
+            }
+            .buttonStyle(PlainButtonStyle())
+            .padding(.top, 4)
         }
     }
 }

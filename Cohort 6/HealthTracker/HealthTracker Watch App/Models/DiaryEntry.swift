@@ -19,6 +19,13 @@ enum EntryType: String, Codable, CaseIterable {
         case .water: return .cyan
         }
     }
+    
+    var displayName: String {
+        switch self {
+        case .calories: return "Calories"
+        case .water: return "Water"
+        }
+    }
 }
 
 struct DiaryEntry: Identifiable, Codable {
