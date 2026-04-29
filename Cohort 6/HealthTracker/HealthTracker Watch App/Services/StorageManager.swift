@@ -43,7 +43,7 @@ class StorageManager {
     
     func saveGoals(_ goals: UserGoals) {
         if let encodedGoals = try? encoder.encode(goals) {
-            defaults.set(encoder, forKey: Keys.userGoals)
+            defaults.set(encodedGoals, forKey: Keys.userGoals)
         }
     }
     
