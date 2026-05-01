@@ -2,6 +2,7 @@ import SwiftUI
 
 struct MainDashboardView: View {
     @ObservedObject var viewModel: HealtTrackerViewModel
+
     
     var body: some View  {
         ScrollView {

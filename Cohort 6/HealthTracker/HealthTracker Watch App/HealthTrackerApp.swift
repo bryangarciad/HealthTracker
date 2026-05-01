@@ -18,6 +18,9 @@ struct HealthTracker_Watch_AppApp: App {
             }
             .onAppear {
                 viewModel.refreshTodaysData()
+                Task {
+                    await viewModel.requestHealthKitAuth()
+                }
             }
         }
     }

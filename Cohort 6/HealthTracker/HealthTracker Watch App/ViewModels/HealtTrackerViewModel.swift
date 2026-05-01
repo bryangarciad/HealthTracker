@@ -7,6 +7,10 @@ class HealtTrackerViewModel: ObservableObject {
     @Published var goals: UserGoals
     @Published var todaysCalories: Double = 0
     @Published var todaysWater: Double = 0
+    
+    // This is a controller variable
+    @Published var useHealthKit: Bool = false
+    @Published var hkAuthStatus: String = "Not Requested"
 
     
     var caloriesProgress: Double {
@@ -19,6 +23,7 @@ class HealtTrackerViewModel: ObservableObject {
     
     // MARK: - View Model For Storage Manager
     private let storageManager = StorageManager.shared
+    private let healthKitManager = HealthKitManager.shared
     
     init() {
         self.goals = StorageManager.shared.loadGoals()
@@ -32,6 +37,19 @@ class HealtTrackerViewModel: ObservableObject {
     
     func addCalories(_ amount: Double) {
         let entry = DiaryEntry(type: .calories, value: amount)
+        
+        if useHealthKit {
+            Task {
+                do {
+                    try await healthKitManager.addEntry(entry)
+                    await refreshTodaysData()
+                } catch {
+                    print("Error adding calories to healthkit")
+                }
+            }
+            return
+        }
+        
         storageManager.addEntry(entry)
         
         todaysCalories += amount
@@ -39,14 +57,59 @@ class HealtTrackerViewModel: ObservableObject {
     
     func addWater(_ amount: Double) {
         let entry = DiaryEntry(type: .water, value: amount)
+        
+        if useHealthKit {
+            Task {
+                do {
+                    try await healthKitManager.addEntry(entry)
+                    await refreshTodaysData()
+                } catch {
+                    print("Error adding calories to healthkit")
+                }
+            }
+            return
+        }
+        
         storageManager.addEntry(entry)
         
         todaysWater += amount
     }
     
+    func refreshTodaysData() async {
+        if useHealthKit {
+            do {
+                todaysCalories = try await healthKitManager.getTodaysTotal(for: .calories)
+                todaysWater = try await healthKitManager.getTodaysTotal(for: .water)
+            } catch {
+                todaysCalories = storageManager.getTodaysTotal(for: .calories)
+                todaysWater = storageManager.getTodaysTotal(for: .water)
+            }
+        } else {
+            todaysCalories = storageManager.getTodaysTotal(for: .calories)
+            todaysWater = storageManager.getTodaysTotal(for: .water)
+        }
+    }
+    
     func refreshTodaysData() {
-        todaysCalories = storageManager.getTodaysTotal(for: .calories)
-        todaysWater = storageManager.getTodaysTotal(for: .water)
+        Task {
+            await refreshTodaysData()
+        }
+    }
+    
+    // MARK: - HealthKit
+    
+    func toggleUseHealthKith() {
+        useHealthKit = !useHealthKit
+    }
+    
+    func requestHealthKitAuth() async {
+        do {
+            try await healthKitManager.requestAuth()
+            hkAuthStatus = "Authorized"
+            await refreshTodaysData()
+        } catch {
+            hkAuthStatus = "Failed Auth"
+        }
     }
     
 }

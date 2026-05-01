@@ -20,6 +20,27 @@ struct GoalsSettingsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
+                // HealthKit Toggle Section
+                VStack(spacing: 8) {
+                    HStack {
+                        Image(systemName: "heart.fill")
+                            .foregroundColor(.red)
+                        Text("Data Source")
+                            .font(.system(size: 13, weight: .medium))
+                        Spacer()
+                    }
+                    
+                    Toggle(isOn: $viewModel.useHealthKit) {
+                        HStack {
+                            Image(systemName: viewModel.useHealthKit ? "applelogo" : "internaldrive")
+                                .foregroundColor(.white)
+                                .font(.system(size: 13))
+                            // Local Storage -- Cloud
+                        }
+                    }
+                }
+                .padding(4)
+                Divider()
                 // Calories Goal Section
                 VStack(spacing: 10) {
                     HStack {
