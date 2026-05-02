@@ -37,59 +37,91 @@ class HealtTrackerViewModel: ObservableObject {
     
     func addCalories(_ amount: Double) {
         let entry = DiaryEntry(type: .calories, value: amount)
-        
+
         if useHealthKit {
             Task {
                 do {
                     try await healthKitManager.addEntry(entry)
+                    // Give HealthKit a moment to index the data
+                    try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+                    // Refresh to get updated totals from HealthKit
                     await refreshTodaysData()
+                    print("Successfully added \(amount) calories to HealthKit")
                 } catch {
-                    print("Error adding calories to healthkit")
+                    print("Error adding calories to HealthKit: \(error)")
+                    // Fallback to local storage
+                    await MainActor.run {
+                        storageManager.addEntry(entry)
+                        todaysCalories += amount
+                    }
                 }
             }
-            return
+        } else {
+            storageManager.addEntry(entry)
+            todaysCalories += amount
         }
-        
-        storageManager.addEntry(entry)
-        
-        todaysCalories += amount
     }
-    
+
     func addWater(_ amount: Double) {
         let entry = DiaryEntry(type: .water, value: amount)
-        
+
         if useHealthKit {
             Task {
                 do {
                     try await healthKitManager.addEntry(entry)
+                    // Give HealthKit a moment to index the data
+                    try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+                    // Refresh to get updated totals from HealthKit
                     await refreshTodaysData()
+                    print("Successfully added \(amount) ml water to HealthKit")
                 } catch {
-                    print("Error adding calories to healthkit")
+                    print("Error adding water to HealthKit: \(error)")
+                    // Fallback to local storage
+                    await MainActor.run {
+                        storageManager.addEntry(entry)
+                        todaysWater += amount
+                    }
                 }
             }
-            return
+        } else {
+            storageManager.addEntry(entry)
+            todaysWater += amount
         }
-        
-        storageManager.addEntry(entry)
-        
-        todaysWater += amount
     }
     
     func refreshTodaysData() async {
+        print("Refreshing data... Source: \(useHealthKit ? "HealthKit" : "Local Storage")")
+
         if useHealthKit {
             do {
-                todaysCalories = try await healthKitManager.getTodaysTotal(for: .calories)
-                todaysWater = try await healthKitManager.getTodaysTotal(for: .water)
+                let calories = try await healthKitManager.getTodaysTotal(for: .calories)
+                let water = try await healthKitManager.getTodaysTotal(for: .water)
+
+                print("HealthKit data - Calories: \(calories), Water: \(water)")
+
+                // Update on main thread
+                await MainActor.run {
+                    todaysCalories = calories
+                    todaysWater = water
+                    print("UI Updated - Calories: \(todaysCalories), Water: \(todaysWater)")
+                }
             } catch {
-                todaysCalories = storageManager.getTodaysTotal(for: .calories)
-                todaysWater = storageManager.getTodaysTotal(for: .water)
+                print("HealthKit error: \(error) - Falling back to local storage")
+                // Fallback to storage on error
+                await MainActor.run {
+                    todaysCalories = storageManager.getTodaysTotal(for: .calories)
+                    todaysWater = storageManager.getTodaysTotal(for: .water)
+                }
             }
         } else {
-            todaysCalories = storageManager.getTodaysTotal(for: .calories)
-            todaysWater = storageManager.getTodaysTotal(for: .water)
+            await MainActor.run {
+                todaysCalories = storageManager.getTodaysTotal(for: .calories)
+                todaysWater = storageManager.getTodaysTotal(for: .water)
+                print("Local data - Calories: \(todaysCalories), Water: \(todaysWater)")
+            }
         }
     }
-    
+
     func refreshTodaysData() {
         Task {
             await refreshTodaysData()

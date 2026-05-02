@@ -82,6 +82,10 @@ struct MainDashboardView: View {
             .buttonStyle(PlainButtonStyle())
             .padding(.top, 4)
         }
+        .onAppear {
+            // Refresh data when view appears
+            viewModel.refreshTodaysData()
+        }
     }
 }
 

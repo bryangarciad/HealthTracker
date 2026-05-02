@@ -35,7 +35,18 @@ struct GoalsSettingsView: View {
                             Image(systemName: viewModel.useHealthKit ? "applelogo" : "internaldrive")
                                 .foregroundColor(.white)
                                 .font(.system(size: 13))
-                            // Local Storage -- Cloud
+                            Text(viewModel.useHealthKit ? "HealthKit" : "Local Storage")
+                                .font(.system(size: 11))
+                        }
+                    }
+                    .onChange(of: viewModel.useHealthKit) { newValue in
+                        Task {
+                            if newValue {
+                                // Request permission if switching to HealthKit
+                                await viewModel.requestHealthKitAuth()
+                            }
+                            // Refresh data from new source
+                            await viewModel.refreshTodaysData()
                         }
                     }
                 }

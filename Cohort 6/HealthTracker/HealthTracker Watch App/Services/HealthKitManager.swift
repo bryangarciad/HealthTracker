@@ -38,17 +38,19 @@ class HealthKitManager {
     func getTodaysTotal(for type: EntryType) async throws -> Double {
         let hkType = type == .calories ? caloriesType : waterType
         let unit = type == .calories ? caloriesUnit : waterUnit
-        
+
         let calendar = Calendar.current
         let now = Date()
         let startOfDay = calendar.startOfDay(for: now)
         let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)
-        
+
+        print("Fetching today's \(type.displayName) from HealthKit...")
+        print("Time range: \(startOfDay) to \(endOfDay ?? now)")
+
         let predicate = HKQuery.predicateForSamples(
             withStart: startOfDay, end: endOfDay, options: .strictStartDate
         )
-        
-        
+
         return try await withCheckedThrowingContinuation { continuation in
             let query = HKStatisticsQuery(
                 quantityType: hkType,
@@ -56,14 +58,16 @@ class HealthKitManager {
                 options: .cumulativeSum
             ) { _, samples, error in
                 if let error = error {
+                    print("Error fetching \(type.displayName): \(error)")
                     continuation.resume(throwing: error)
                     return
                 }
-                
+
                 let sum = samples?.sumQuantity()?.doubleValue(for: unit) ?? 0.0
+                print("Fetched \(sum) \(type.displayName) from HealthKit")
                 continuation.resume(returning: sum)
             }
-            
+
             healthStore.execute(query)
         }
     }
@@ -71,7 +75,9 @@ class HealthKitManager {
     func addEntry(_ entry: DiaryEntry) async throws {
         let hkType = entry.type == .calories ? caloriesType : waterType
         let unit = entry.type == .calories ? caloriesUnit : waterUnit
-        
+
+        print("Adding \(entry.value) \(entry.type.displayName) to HealthKit...")
+
         let quantity = HKQuantity(unit: unit, doubleValue: entry.value)
         let sample = HKQuantitySample(
             type: hkType,
@@ -79,8 +85,9 @@ class HealthKitManager {
             start: entry.timestamp,
             end: entry.timestamp
         )
-        
+
         try await healthStore.save(sample)
+        print("Saved to HealthKit successfully")
     }
 }
 
