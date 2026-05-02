@@ -12,6 +12,7 @@ struct MainDashboardView: View {
                     .foregroundColor(.gray)
             }
             
+            // Rings Section
             HStack(spacing: 20) {
                 VStack(spacing: 6) {
                     // Water Ring,
@@ -51,6 +52,7 @@ struct MainDashboardView: View {
                 }
             }
             
+            // Quick Action Buttons
             HStack(spacing: 12) {
                 NavigationLink(destination: AddEntryView(viewModel: viewModel, entryType: .water)) {
                     QuickAddButton(
@@ -71,6 +73,7 @@ struct MainDashboardView: View {
                 .buttonStyle(PlainButtonStyle())
             }
             
+            // Settings button
             NavigationLink(destination: GoalsSettingsView(viewModel: viewModel)) {
                 HStack {
                     Image(systemName: "gearshape.fill")
@@ -81,6 +84,8 @@ struct MainDashboardView: View {
             }
             .buttonStyle(PlainButtonStyle())
             .padding(.top, 4)
+            
+            // Heart Rate Card Section
         }
         .onAppear {
             // Refresh data when view appears
