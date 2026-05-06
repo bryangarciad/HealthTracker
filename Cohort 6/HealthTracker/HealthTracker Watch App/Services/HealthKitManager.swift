@@ -20,7 +20,7 @@ class HealthKitManager {
     // MARK: - Units
     private let caloriesUnit = HKUnit.kilocalorie()
     private let waterUnit = HKUnit.literUnit(with: .milli)
-    private let heartRaterUnit = HKUnit(from: "count/min") // BPM
+    private let heartRateUnit = HKUnit(from: "count/min") // BPM
     
     // MARK: - Query
     private var heartRateQuery: HKAnchoredObjectQuery?
@@ -116,7 +116,7 @@ class HealthKitManager {
         
         let heartRateSamples: [HeartRateSample] = quantitySamples.map { sample in
                 HeartRateSample(
-                    bpm: sample.quantity.doubleValue(for: heartRaterUnit),
+                    bpm: sample.quantity.doubleValue(for: heartRateUnit),
                     timestamp: sample.startDate)
         }
         
@@ -130,12 +130,12 @@ class HealthKitManager {
         
         let query = HKAnchoredObjectQuery(
             type: heartRateType,
-            predicate: nil,
-            anchor: nil,
+            predicate: nil, // No predicate means give me all available data
+            anchor: nil, // A anchor obj that can set certain conditions to close the connection
             limit: HKObjectQueryNoLimit
         ) { [weak self] query, samples, deletedObjects, anchor, error in
             guard let self = self,
-                  let error = error else {
+                  let _ = error else {
                 self?.heartRateErrors = "Something wrong happened while getting heart Rate Data"
                 return
             }
@@ -144,7 +144,7 @@ class HealthKitManager {
         
         query.updateHandler = { [weak self] query, samples, deletedObjects, anchor, error in
             guard let self = self,
-                  let error = error else {
+                  let _ = error else {
                 self?.heartRateErrors = "Something wrong happened while getting heart Rate Data"
                 return
             }

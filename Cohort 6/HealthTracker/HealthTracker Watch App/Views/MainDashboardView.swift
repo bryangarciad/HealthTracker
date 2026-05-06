@@ -86,6 +86,8 @@ struct MainDashboardView: View {
             .padding(.top, 4)
             
             // Heart Rate Card Section
+            HeartRateCardView(viewModel: viewModel)
+                .padding(.top, 8)
         }
         .onAppear {
             // Refresh data when view appears

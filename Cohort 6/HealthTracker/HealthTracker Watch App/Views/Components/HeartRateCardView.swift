@@ -5,14 +5,17 @@ struct HeartRateCardView: View {
     
     @State private var isHeartPulsing = false
     
+    
+    // MARK: - Computed Props
     private var pulseDuration: Double {
-        return 60.0 / viewModel.currentHeartRate
+        return 60.0
     }
     
     private var isBeating: Bool {
         viewModel.isMonitoringHeartRate
     }
     
+    // MARK: - Methods
     private func handleTapEvent() {
         if !viewModel.isHealthKitHeartRateAuthorized {
             Task {
@@ -23,6 +26,7 @@ struct HeartRateCardView: View {
         }
     }
     
+    // MARK: - Private Views
     private var cardBackground: some View {
         if !viewModel.isHealthKitHeartRateAuthorized {
             Color.orange.opacity(0.12)
@@ -76,15 +80,33 @@ struct HeartRateCardView: View {
         }
     }
     
+    private var statusIndicator: some View {
+        Group {
+            if !viewModel.isHealthKitHeartRateAuthorized {
+                Image(systemName: "exclamationMark.circle.fill")
+                    .font(.system(size: 14))
+                    .foregroundColor(.orange)
+            } else if viewModel.isMonitoringHeartRate {
+                Image(systemName: "stop.circle.fill")
+                    .font(.system(size: 14))
+                    .foregroundColor(.red)
+            } else {
+                Image(systemName: "play.circle.fill")
+                    .font(.system(size: 14))
+                    .foregroundColor(.green)
+            }
+        }
+    }
+    
     var body: some View {
         Button {
             handleTapEvent()
         } label: {
             HStack(spacing: 20) {
                 animatedHeart
-                
+                heartRateDisplay
                 Spacer()
-                // Status Indicator
+                statusIndicator
             }
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
@@ -94,18 +116,29 @@ struct HeartRateCardView: View {
         .buttonStyle(PlainButtonStyle())
         .onAppear {
             if isBeating {
-                // start pulse
+                isHeartPulsing = true
             }
         }
         .onChange(of: isBeating) { _, newValue in
             if newValue {
-                //startPulse
+                isHeartPulsing = true
             } else {
-                //stop pulse
+                isHeartPulsing = false
             }
         }
         .onChange(of: viewModel.currentHeartRate) {
-            // restart pulse
+            if isBeating {
+                isHeartPulsing = false
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    isHeartPulsing = true
+                }
+            }
         }
     }
+}
+
+#Preview {
+    HeartRateCardView(
+        viewModel: HealtTrackerViewModel()
+    )
 }
