@@ -2,8 +2,9 @@ import SwiftUI
 
 struct MainDashboardView: View {
     @ObservedObject var viewModel: HealtTrackerViewModel
-
     
+    let currentActivity: ActivityType?
+
     var body: some View  {
         ScrollView {
             VStack(spacing: 16) {
@@ -86,7 +87,7 @@ struct MainDashboardView: View {
             .padding(.top, 4)
             
             // Heart Rate Card Section
-            HeartRateCardView(viewModel: viewModel)
+            HeartRateCardView(viewModel: viewModel, currentActivity: currentActivity)
                 .padding(.top, 8)
         }
         .onAppear {
@@ -97,6 +98,6 @@ struct MainDashboardView: View {
 }
 
 #Preview {
-    MainDashboardView(viewModel: HealtTrackerViewModel())
+    MainDashboardView(viewModel: HealtTrackerViewModel(), currentActivity: .automotive)
 }
 

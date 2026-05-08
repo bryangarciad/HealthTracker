@@ -5,6 +5,8 @@ struct HeartRateCardView: View {
     
     @State private var isHeartPulsing = false
     
+    let currentActivity: ActivityType = .unknown
+    
     
     // MARK: - Computed Props
     private var pulseDuration: Double {
@@ -73,6 +75,9 @@ struct HeartRateCardView: View {
                         .font(.system(size: 20, weight: .bold, design: .rounded))
                         .foregroundColor(.orange)
                     Text("BPM")
+                        .font(.system(size: 9))
+                        .foregroundColor(.gray)
+                    Image(systemName: currentActivity.icon)
                         .font(.system(size: 9))
                         .foregroundColor(.gray)
                 }
