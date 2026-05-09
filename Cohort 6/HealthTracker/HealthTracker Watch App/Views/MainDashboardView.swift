@@ -87,13 +87,39 @@ struct MainDashboardView: View {
             .padding(.top, 4)
             
             // Heart Rate Card Section
-            HeartRateCardView(viewModel: viewModel, currentActivity: currentActivity)
+            HeartRateCardView(viewModel: viewModel)
                 .padding(.top, 8)
+        }
+        .overlay() {
+            if viewModel.showMotivationalQuote {
+                ZStack {
+                    Color.black.opacity(0.85)
+                        .ignoresSafeArea()
+                    
+                    VStack(spacing: 12) {
+                        Image(systemName: "quote.opening")
+                            .font(.title3)
+                            .foregroundColor(.yellow)
+                        
+                        Text(viewModel.currentQuote?.quote ?? "")
+                            .font(.system(size: 14, weight: .medium))
+                            .foregroundColor(.white)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(4)
+                        
+                        Text("-- \(viewModel.currentQuote?.author ?? "")")
+                            .font(.system(size: 11, weight: .medium))
+                            .foregroundColor(.gray)
+                    }
+                    .padding(.horizontal, 12)
+                }
+            }
         }
         .onAppear {
             // Refresh data when view appears
             viewModel.refreshTodaysData()
         }
+ 
     }
 }
 
