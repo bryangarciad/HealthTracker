@@ -33,7 +33,7 @@ class StorageManager {
     func addEntry(_ entry: DiaryEntry) {
         var allTimeEntries = loadEntries()
         allTimeEntries.append(entry)
-        saveEntries(allTimeEntries)
+        self.saveEntries(allTimeEntries)
     }
     
     func getTodaysEntries() -> [DiaryEntry] {
@@ -46,5 +46,9 @@ class StorageManager {
         }
     }
     
-    
+    func getTodayTotal(for type: EntryType) -> Double {
+        self.getTodaysEntries()
+            .filter { $0.type == type }
+            .reduce(0) { $0 + $1.value }
+    }
 }
