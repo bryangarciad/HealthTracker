@@ -1,10 +1,13 @@
 import Foundation
 import Combine
+import WatchKit
 
 class HealthViewModel: ObservableObject {
     // MARK: - Published Variables
     @Published var todaysWater: Double = 0
     @Published var todaysCalories: Double = 0
+    
+    @Published var goals: UserGoals
     
     // MARK: - Computed Properties
     var caloriesProgress: Double {
@@ -19,7 +22,16 @@ class HealthViewModel: ObservableObject {
     private let storageManager = StorageManager.shared
     
     init() {
-        self.refreshDailyTotals()
+        self.goals = storageManager.loadCurrentGoals()
+        refreshDailyTotals()
+    }
+    
+    func updateGoals(calories: Double, water: Double) {
+        goals = UserGoals(
+            dailyCaloriesGoal: calories, dailyWaterGoal: water
+        )
+        storageManager.saveNewGoals(goals)
+        WKInterfaceDevice.current().play(.success)
     }
     
     func refreshDailyTotals() {
@@ -27,6 +39,19 @@ class HealthViewModel: ObservableObject {
         todaysWater = storageManager.getTodayTotal(for: .water)
     }
     
-    func addCalories(_ amount: Double) {}
-    func addWater(_ amount: Double) {}
+    func addCalories(_ amount: Double) {
+        let entry = DiaryEntry(
+            type: .calories,
+            value: amount
+        )
+        storageManager.addEntry(entry)
+    }
+    
+    func addWater(_ amount: Double) {
+        let entry = DiaryEntry(
+            type: .water,
+            value: amount
+        )
+        storageManager.addEntry(entry)
+    }
 }

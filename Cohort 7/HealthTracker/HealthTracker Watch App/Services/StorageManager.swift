@@ -12,6 +12,7 @@ class StorageManager {
     
     private enum Keys {
         static let diaryEntries = "diary_entries"
+        static let userGoals = "user_goals"
     }
     
     // MARK: - Entries Business Logic
@@ -50,5 +51,21 @@ class StorageManager {
         self.getTodaysEntries()
             .filter { $0.type == type }
             .reduce(0) { $0 + $1.value }
+    }
+    
+    
+    // MARK: - Settings Bussines Logic
+    func saveNewGoals(_ goals: UserGoals) {
+        if let encodedGoals = try? encoder.encode(goals) {
+            storage.set(encodedGoals, forKey: Keys.userGoals)
+        }
+    }
+    
+    func loadCurrentGoals() -> UserGoals {
+        guard let rawGoals = storage.data(forKey: Keys.userGoals),
+              let userGoals = try? decoder.decode(UserGoals.self, from: rawGoals) else {
+            return UserGoals.defaultGoals
+        }
+        return userGoals
     }
 }

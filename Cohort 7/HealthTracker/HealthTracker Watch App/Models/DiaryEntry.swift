@@ -17,7 +17,7 @@ enum EntryType: String, Codable, CaseIterable {
     var icon: String {
         switch self {
         case .water: return "drop.fill"
-        case .calories: return "flame.fillß"
+        case .calories: return "flame.fill"
         }
     }
 }
