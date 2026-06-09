@@ -9,23 +9,23 @@ class HealthViewModel: ObservableObject {
     
     @Published var goals: UserGoals
     
-    // MARK: - Computed Properties
-    var caloriesProgress: Double {
-        min(todaysCalories / UserGoals.defaultGoals.dailyCaloriesGoal, 1) // 0-1
-    }
+    @Published var currentQuote: MotivationalQuote?
+    @Published var isLoadingQuote: Bool = false
+    @Published var showQuoteOverlay: Bool = false
     
-    var waterProgress: Double {
-        min(todaysWater / UserGoals.defaultGoals.dailyWaterGoal, 1)
-    }
+ 
     
     // MARK: - Services/Managers
     private let storageManager = StorageManager.shared
+    private let motivationalQuoteService = MotivationalQuoteService.shared
+    
     
     init() {
         self.goals = storageManager.loadCurrentGoals()
         refreshDailyTotals()
     }
     
+    // MARK: - Methods Goals
     func updateGoals(calories: Double, water: Double) {
         goals = UserGoals(
             dailyCaloriesGoal: calories, dailyWaterGoal: water
@@ -34,6 +34,7 @@ class HealthViewModel: ObservableObject {
         WKInterfaceDevice.current().play(.success)
     }
     
+    // MARK: - Methods Diary Entries
     func refreshDailyTotals() {
         todaysCalories = storageManager.getTodayTotal(for: .calories)
         todaysWater = storageManager.getTodayTotal(for: .water)
@@ -45,6 +46,8 @@ class HealthViewModel: ObservableObject {
             value: amount
         )
         storageManager.addEntry(entry)
+        
+        fetchQuoteAfterEntry()
     }
     
     func addWater(_ amount: Double) {
@@ -53,5 +56,21 @@ class HealthViewModel: ObservableObject {
             value: amount
         )
         storageManager.addEntry(entry)
+        
+        fetchQuoteAfterEntry()
+    }
+
+    // MARK: - Methods Motivational Quotes
+    func fetchQuoteAfterEntry() {
+        isLoadingQuote = true
+        showQuoteOverlay = true
+        
+        Task {
+            currentQuote = await motivationalQuoteService.fetchQuote()
+            isLoadingQuote = false
+            
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            showQuoteOverlay = false
+        }
     }
 }

@@ -85,6 +85,7 @@ struct AddEntryView: View {
                         healthViewModel.addWater(selectedAmount)
                     }
                     healthViewModel.refreshDailyTotals()
+                    
                     dismiss()
                 } label: {
                     Text("Add")
