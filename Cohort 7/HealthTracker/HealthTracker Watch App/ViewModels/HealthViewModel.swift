@@ -3,6 +3,7 @@ import Combine
 import WatchKit
 
 class HealthViewModel: ObservableObject {
+
     // MARK: - Published Variables
     @Published var todaysWater: Double = 0
     @Published var todaysCalories: Double = 0
@@ -12,8 +13,6 @@ class HealthViewModel: ObservableObject {
     @Published var currentQuote: MotivationalQuote?
     @Published var isLoadingQuote: Bool = false
     @Published var showQuoteOverlay: Bool = false
-    
- 
     
     // MARK: - Services/Managers
     private let storageManager = StorageManager.shared

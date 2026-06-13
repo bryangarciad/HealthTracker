@@ -8,8 +8,8 @@ struct QuoteOverlayView: View {
     
     var body: some View {
         ZStack {
-            //Semi-transparent background
-            Color.black.opacity(0.7)
+            // Semi-transparent background
+            Color.black.opacity(0.9)
                 .ignoresSafeArea()
             
             VStack(spacing: 12) {
