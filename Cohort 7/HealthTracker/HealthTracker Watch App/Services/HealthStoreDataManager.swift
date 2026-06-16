@@ -101,7 +101,7 @@ class HealthStoreDataManager {
             predicate: nil,
             anchor: nil, // if you set the anchor with nil com will stay open always
             limit: HKObjectQueryNoLimit
-        ) { [weak self] query, samples, deletedObjects, anchor, error in
+        ) { [weak self] _, samples, deletedObjects, _, error in
             guard let self = self else { return }
             self.processHeartRateSamples(samples, onUpdate: onUpdateHandler)
         }
@@ -174,5 +174,15 @@ class HealthStoreDataManager {
     }
     
     func addEntry(_ entry: DiaryEntry) async throws {
+        let (hkType, unit) = getHealthKitTypeAndUnitForEntries(for: entry.type)
+        
+        let sample = createHealthKitSampleFromQuantityTypes(
+            type: hkType,
+            unit: unit,
+            value: entry.value,
+            timestamp: entry.timestamp
+        )
+        
+        try await healthStore.save(sample)
     }
 }

@@ -92,6 +92,7 @@ struct MainDashboardView: View {
                     isLoading: healthViewModel.isLoadingQuote,
                     onDismiss: {
                         healthViewModel.showQuoteOverlay = false
+                        healthViewModel
                     }
                 )
             }
