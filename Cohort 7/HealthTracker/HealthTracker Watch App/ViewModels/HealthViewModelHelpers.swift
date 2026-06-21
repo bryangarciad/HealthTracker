@@ -14,7 +14,6 @@ extension HealthViewModel {
         }
     }
     
-    
     private func addToHealthKit(_ entry: DiaryEntry, onSuccess: @escaping () -> Void) {
         Task {
             do {
